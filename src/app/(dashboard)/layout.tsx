@@ -1,9 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Sidebar, DashboardHeader } from "@/components/layout";
 import { ToastContainer } from "@/components/ui";
 import { AuthGuard } from "@/components/auth/AuthGuard";
+
+const SIDEBAR_WIDTH = 256; // 16rem = 256px (w-64)
 
 export default function DashboardLayout({
   children,
@@ -11,6 +13,15 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isDesktop, setIsDesktop] = useState(false);
+
+  // Detect desktop breakpoint (lg = 1024px)
+  useEffect(() => {
+    const checkDesktop = () => setIsDesktop(window.innerWidth >= 1024);
+    checkDesktop();
+    window.addEventListener("resize", checkDesktop);
+    return () => window.removeEventListener("resize", checkDesktop);
+  }, []);
 
   return (
     <AuthGuard>
@@ -21,8 +32,11 @@ export default function DashboardLayout({
           onClose={() => setIsSidebarOpen(false)}
         />
 
-        {/* Main Content Area - offset by sidebar width on lg screens */}
-        <div className="lg:ml-64 min-h-screen flex flex-col">
+        {/* Main Content Area - offset by sidebar width on desktop */}
+        <div
+          className="min-h-screen flex flex-col"
+          style={{ marginLeft: isDesktop ? SIDEBAR_WIDTH : 0 }}
+        >
           {/* Top Header */}
           <DashboardHeader
             title="Dashboard"

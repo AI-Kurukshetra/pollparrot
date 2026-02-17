@@ -8,7 +8,7 @@
  * and a signOut function.
  */
 
-import { useCallback, useEffect, useState, useRef } from "react";
+import { useCallback, useEffect, useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import type { User, Session } from "@supabase/supabase-js";
 import { createClient } from "@/lib/supabase/client";
@@ -32,10 +32,9 @@ export function useUser(): UseUserReturn {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
   const router = useRouter();
-  const initializedRef = useRef(false);
 
-  // Get the singleton client
-  const supabase = createClient();
+  // Get the singleton client - memoize to ensure stable reference
+  const supabase = useMemo(() => createClient(), []);
 
   // Fetch user profile from database
   const fetchProfile = useCallback(async (userId: string) => {
@@ -105,11 +104,19 @@ export function useUser(): UseUserReturn {
     }
   }, [supabase, router]);
 
-  // Initial load and auth state subscription - runs once
+  // Initial load and auth state subscription
   useEffect(() => {
-    // Prevent double initialization in React strict mode
-    if (initializedRef.current) return;
-    initializedRef.current = true;
+    let isMounted = true;
+    let hasResolved = false;
+
+    // Safety timeout - ensure loading state resolves even if auth hangs
+    const timeoutId = setTimeout(() => {
+      if (isMounted && !hasResolved) {
+        console.warn("Auth initialization timed out, defaulting to logged out state");
+        setIsLoading(false);
+        hasResolved = true;
+      }
+    }, 5000);
 
     // Get initial session
     const initializeAuth = async () => {
@@ -118,6 +125,8 @@ export function useUser(): UseUserReturn {
           data: { session: currentSession },
           error: sessionError,
         } = await supabase.auth.getSession();
+
+        if (!isMounted || hasResolved) return;
 
         if (sessionError) {
           throw sessionError;
@@ -128,12 +137,19 @@ export function useUser(): UseUserReturn {
         if (currentSession?.user) {
           setUser(currentSession.user);
           const userProfile = await fetchProfile(currentSession.user.id);
-          setProfile(userProfile);
+          if (isMounted && !hasResolved) {
+            setProfile(userProfile);
+          }
         }
       } catch (err) {
-        setError(err instanceof Error ? err : new Error("Failed to fetch user"));
+        if (isMounted && !hasResolved) {
+          setError(err instanceof Error ? err : new Error("Failed to fetch user"));
+        }
       } finally {
-        setIsLoading(false);
+        if (isMounted && !hasResolved) {
+          setIsLoading(false);
+          hasResolved = true;
+        }
       }
     };
 
@@ -143,12 +159,16 @@ export function useUser(): UseUserReturn {
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(async (event, newSession) => {
+      if (!isMounted) return;
+
       setSession(newSession);
 
       if (newSession?.user) {
         setUser(newSession.user);
         const userProfile = await fetchProfile(newSession.user.id);
-        setProfile(userProfile);
+        if (isMounted) {
+          setProfile(userProfile);
+        }
       } else {
         setUser(null);
         setProfile(null);
@@ -162,8 +182,10 @@ export function useUser(): UseUserReturn {
       }
     });
 
-    // Cleanup subscription
+    // Cleanup subscription and timeout
     return () => {
+      isMounted = false;
+      clearTimeout(timeoutId);
       subscription.unsubscribe();
     };
   }, [supabase, router, fetchProfile]);

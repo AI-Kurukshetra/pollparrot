@@ -25,7 +25,7 @@ export default function DashboardLayout({
 
   return (
     <AuthGuard>
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen w-full bg-gray-50">
         {/* Sidebar - Fixed on desktop, overlay on mobile */}
         <Sidebar
           isOpen={isSidebarOpen}
@@ -34,8 +34,11 @@ export default function DashboardLayout({
 
         {/* Main Content Area - offset by sidebar width on desktop */}
         <div
-          className="min-h-screen flex flex-col"
-          style={{ marginLeft: isDesktop ? SIDEBAR_WIDTH : 0 }}
+          className="min-h-screen w-full flex flex-col"
+          style={{
+            marginLeft: isDesktop ? SIDEBAR_WIDTH : 0,
+            width: isDesktop ? `calc(100% - ${SIDEBAR_WIDTH}px)` : '100%'
+          }}
         >
           {/* Top Header */}
           <DashboardHeader
@@ -44,8 +47,8 @@ export default function DashboardLayout({
           />
 
           {/* Page Content */}
-          <main className="flex-1 p-6 lg:p-8">
-            <div className="max-w-6xl mx-auto">
+          <main className="flex-1 w-full p-6 lg:p-8">
+            <div className="w-full max-w-6xl mx-auto">
               {children}
             </div>
           </main>

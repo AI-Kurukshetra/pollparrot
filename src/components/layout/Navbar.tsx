@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Menu, X } from "lucide-react";
@@ -17,12 +17,73 @@ const navLinks = [
 
 export function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const pathname = usePathname();
   const { user, isLoading } = useUser();
+
+  // Set mounted after hydration to prevent mismatch
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const isActivePath = (href: string) => {
     if (href.startsWith("/#")) return false;
     return pathname === href;
+  };
+
+  // Render auth buttons based on state
+  const renderAuthButtons = (mobile = false) => {
+    // Before hydration, render nothing to avoid mismatch
+    if (!mounted) {
+      return mobile ? (
+        <div className="h-10 animate-pulse rounded-lg bg-background-light" />
+      ) : (
+        <div className="h-9 w-20 animate-pulse rounded-lg bg-background-light" />
+      );
+    }
+
+    // After hydration, show loading state while checking auth
+    if (isLoading) {
+      return mobile ? (
+        <div className="h-10 animate-pulse rounded-lg bg-background-light" />
+      ) : (
+        <div className="h-9 w-20 animate-pulse rounded-lg bg-background-light" />
+      );
+    }
+
+    // User is authenticated
+    if (user) {
+      return (
+        <Link href={APP_ROUTES.dashboard}>
+          <Button fullWidth={mobile}>Dashboard</Button>
+        </Link>
+      );
+    }
+
+    // User is not authenticated
+    if (mobile) {
+      return (
+        <div className="space-y-2">
+          <Link href={APP_ROUTES.login}>
+            <Button variant="outline" fullWidth>Log in</Button>
+          </Link>
+          <Link href={APP_ROUTES.signup}>
+            <Button fullWidth>Sign up</Button>
+          </Link>
+        </div>
+      );
+    }
+
+    return (
+      <>
+        <Link href={APP_ROUTES.login}>
+          <Button variant="ghost">Log in</Button>
+        </Link>
+        <Link href={APP_ROUTES.signup}>
+          <Button>Sign up</Button>
+        </Link>
+      </>
+    );
   };
 
   return (
@@ -49,22 +110,7 @@ export function Navbar() {
 
           {/* Desktop Auth Buttons */}
           <div className="hidden md:flex md:items-center md:gap-3">
-            {isLoading ? (
-              <div className="h-9 w-20 animate-pulse rounded-lg bg-background-light" />
-            ) : user ? (
-              <Link href={APP_ROUTES.dashboard}>
-                <Button>Dashboard</Button>
-              </Link>
-            ) : (
-              <>
-                <Link href={APP_ROUTES.login}>
-                  <Button variant="ghost">Log in</Button>
-                </Link>
-                <Link href={APP_ROUTES.signup}>
-                  <Button>Sign up</Button>
-                </Link>
-              </>
-            )}
+            {renderAuthButtons(false)}
           </div>
 
           {/* Mobile Menu Button */}
@@ -97,22 +143,7 @@ export function Navbar() {
               </Link>
             ))}
             <hr className="border-gray-200" />
-            {isLoading ? (
-              <div className="h-10 animate-pulse rounded-lg bg-background-light" />
-            ) : user ? (
-              <Link href={APP_ROUTES.dashboard}>
-                <Button fullWidth>Dashboard</Button>
-              </Link>
-            ) : (
-              <div className="space-y-2">
-                <Link href={APP_ROUTES.login}>
-                  <Button variant="outline" fullWidth>Log in</Button>
-                </Link>
-                <Link href={APP_ROUTES.signup}>
-                  <Button fullWidth>Sign up</Button>
-                </Link>
-              </div>
-            )}
+            {renderAuthButtons(true)}
           </div>
         </div>
       )}

@@ -6,7 +6,7 @@ import { Button } from "@/components/ui";
 
 export function Hero() {
   return (
-    <section className="relative py-20 lg:py-32 overflow-x-clip">
+    <section className="relative w-full py-20 lg:py-32 overflow-x-clip">
       {/* Background gradients */}
       <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-primary/5 to-transparent" />
       <div className="absolute top-1/4 right-0 w-96 h-96 bg-primary/10 rounded-full blur-3xl" />

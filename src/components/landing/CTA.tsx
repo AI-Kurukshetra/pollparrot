@@ -6,7 +6,7 @@ import { Button } from "@/components/ui";
 
 export function CTA() {
   return (
-    <section className="py-24 relative overflow-hidden">
+    <section className="w-full py-24 relative overflow-hidden">
       {/* Background gradient */}
       <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-primary/10 to-white" />
 

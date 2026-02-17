@@ -45,3 +45,5 @@ next-env.d.ts
 
 # Claude Code
 .mcp.json
+pollparrot-claude-code-prompt.md
+pollparrot-workflow-prompt.md

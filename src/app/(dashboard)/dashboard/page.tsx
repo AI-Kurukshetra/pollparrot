@@ -90,9 +90,9 @@ export default function DashboardPage() {
   }, [surveys]);
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6">
       {/* Welcome Section */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">
             Welcome back{profile?.full_name ? `, ${profile.full_name.split(" ")[0]}` : ""}!
@@ -105,13 +105,14 @@ export default function DashboardPage() {
           leftIcon={<Plus className="h-4 w-4" />}
           onClick={handleCreateSurvey}
           isLoading={isCreating}
+          className="shrink-0"
         >
           Create Survey
         </Button>
       </div>
 
       {/* Search and Filters */}
-      <div className="flex flex-col sm:flex-row gap-4">
+      <div className="flex flex-col sm:flex-row gap-4 mb-6">
         <div className="relative flex-1 max-w-md">
           <Input
             placeholder="Search surveys..."
@@ -158,7 +159,7 @@ export default function DashboardPage() {
           isCreating={isCreating}
         />
       ) : (
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
           {filteredSurveys.map((survey) => (
             <SurveyCardWithRealtime
               key={survey.id}

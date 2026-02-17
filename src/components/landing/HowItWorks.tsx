@@ -38,7 +38,7 @@ export function HowItWorks() {
         <div className="absolute bottom-0 right-1/4 w-64 h-64 bg-primary/5 rounded-full blur-3xl" />
       </div>
 
-      <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div className="relative mx-auto max-w-7xl px-6 lg:px-8">
         {/* Section header */}
         <div className="text-center mb-20">
           <span className="text-primary font-semibold text-sm uppercase tracking-wider">

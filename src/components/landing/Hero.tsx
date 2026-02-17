@@ -6,7 +6,7 @@ import { Button } from "@/components/ui";
 
 export function Hero() {
   return (
-    <section className="relative w-full py-20 lg:py-32 overflow-x-clip">
+    <section className="relative w-full py-20 lg:py-32 overflow-hidden">
       {/* Background gradients */}
       <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-primary/5 to-transparent" />
       <div className="absolute top-1/4 right-0 w-96 h-96 bg-primary/10 rounded-full blur-3xl" />
@@ -17,7 +17,7 @@ export function Hero() {
       <div className="absolute top-40 right-20 w-3 h-3 bg-primary/30 rounded-full animate-float" style={{ animationDelay: "1s" }} />
       <div className="absolute bottom-32 left-1/3 w-2 h-2 bg-primary/50 rounded-full animate-float" style={{ animationDelay: "2s" }} />
 
-      <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div className="relative mx-auto max-w-7xl px-6 lg:px-8">
         <div className="text-center">
           {/* Badge */}
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 mb-8 animate-fadeIn">
@@ -28,7 +28,7 @@ export function Hero() {
           </div>
 
           {/* Main headline */}
-          <h1 className="text-4xl sm:text-5xl lg:text-7xl font-bold text-text-primary tracking-tight animate-slideUp">
+          <h1 className="text-4xl sm:text-5xl lg:text-7xl font-bold text-text-primary tracking-tight animate-slideUp max-w-4xl mx-auto">
             Create Surveys That
             <span className="block mt-2 text-gradient bg-gradient-to-r from-primary via-primary-light to-primary">
               Get Results
@@ -36,7 +36,7 @@ export function Hero() {
           </h1>
 
           {/* Subheadline */}
-          <p className="mt-8 text-lg sm:text-xl lg:text-2xl text-text-secondary max-w-3xl mx-auto leading-relaxed animate-slideUp" style={{ animationDelay: "0.1s" }}>
+          <p className="mt-8 text-lg sm:text-xl lg:text-2xl text-text-secondary max-w-2xl mx-auto leading-relaxed animate-slideUp" style={{ animationDelay: "0.1s" }}>
             Build beautiful, engaging surveys in minutes. Collect feedback,
             understand your audience, and make data-driven decisions with powerful analytics.
           </p>
@@ -82,9 +82,9 @@ export function Hero() {
 
         {/* Hero visual */}
         <div className="mt-20 relative animate-slideUp" style={{ animationDelay: "0.4s" }}>
-          <div className="relative mx-auto max-w-5xl">
+          <div className="relative mx-auto max-w-5xl px-4 lg:px-0">
             {/* Browser mockup */}
-            <div className="rounded-2xl overflow-hidden border border-gray-200 bg-gray-50 shadow-2xl">
+            <div className="rounded-2xl overflow-hidden border border-gray-200 bg-gray-50 shadow-2xl w-full">
               {/* Browser header */}
               <div className="flex items-center gap-2 px-4 py-3 bg-gray-100 border-b border-gray-200">
                 <div className="flex gap-2">
@@ -146,7 +146,7 @@ export function Hero() {
             </div>
 
             {/* Floating stats cards */}
-            <div className="absolute left-4 xl:-left-4 top-1/4 hidden lg:block animate-float">
+            <div className="absolute left-0 xl:left-4 top-1/4 hidden lg:block animate-float">
               <div className="px-4 py-3 rounded-lg bg-white border border-gray-200 shadow-lg">
                 <div className="flex items-center gap-2">
                   <div className="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center">
@@ -162,7 +162,7 @@ export function Hero() {
               </div>
             </div>
 
-            <div className="absolute right-4 xl:-right-4 bottom-1/3 hidden lg:block animate-float" style={{ animationDelay: "1.5s" }}>
+            <div className="absolute right-0 xl:right-4 bottom-1/3 hidden lg:block animate-float" style={{ animationDelay: "1.5s" }}>
               <div className="px-4 py-3 rounded-lg bg-white border border-gray-200 shadow-lg">
                 <div className="flex items-center gap-2">
                   <div className="w-8 h-8 rounded-full bg-[#FFF5F0] flex items-center justify-center">

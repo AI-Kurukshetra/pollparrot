@@ -49,7 +49,7 @@ export function Testimonials() {
       <div className="absolute top-1/2 left-0 w-96 h-96 bg-primary/5 rounded-full blur-3xl transform -translate-y-1/2 -translate-x-1/2" />
       <div className="absolute top-1/2 right-0 w-96 h-96 bg-primary/5 rounded-full blur-3xl transform -translate-y-1/2 translate-x-1/2" />
 
-      <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div className="relative mx-auto max-w-7xl px-6 lg:px-8">
         {/* Section header */}
         <div className="text-center mb-16">
           <span className="text-primary font-semibold text-sm uppercase tracking-wider">

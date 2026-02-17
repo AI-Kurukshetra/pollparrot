@@ -22,14 +22,14 @@ export function CTA() {
         <div className="absolute bottom-32 right-[10%] w-4 h-4 bg-primary/30 rounded-full animate-float" style={{ animationDelay: "0.5s" }} />
       </div>
 
-      <div className="relative mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 text-center">
+      <div className="relative mx-auto max-w-7xl px-6 lg:px-8 text-center">
         {/* Icon */}
         <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-primary/20 mb-8 animate-pulse">
           <Zap className="w-8 h-8 text-primary" />
         </div>
 
         {/* Headline */}
-        <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-text-primary">
+        <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-text-primary max-w-4xl mx-auto">
           Ready to Create Your
           <span className="block mt-2 text-gradient">First Survey?</span>
         </h2>

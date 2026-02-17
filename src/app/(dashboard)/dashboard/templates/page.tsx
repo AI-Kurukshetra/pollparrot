@@ -70,9 +70,9 @@ export default function TemplatesPage() {
   }
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6">
       {/* Header */}
-      <div>
+      <div className="mb-8">
         <h1 className="text-2xl font-bold text-gray-900">Survey Templates</h1>
         <p className="text-gray-500 mt-1">
           Start with a pre-built template and customize it to your needs.
@@ -80,7 +80,7 @@ export default function TemplatesPage() {
       </div>
 
       {/* Category Filter Tabs */}
-      <div className="flex flex-wrap gap-2">
+      <div className="flex flex-wrap gap-2 mb-6">
         {TEMPLATE_CATEGORIES.map((category) => {
           const count = categoryCounts[category.id] || 0;
           const isActive = activeCategory === category.id;

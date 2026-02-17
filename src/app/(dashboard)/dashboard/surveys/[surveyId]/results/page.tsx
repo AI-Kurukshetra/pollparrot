@@ -137,7 +137,7 @@ export default function ResultsPage() {
       </div>
 
       {/* Stats Cards */}
-      <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
         <Card padding="md" className="bg-white border border-gray-200">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-lg bg-[#FFF5F0] flex items-center justify-center">

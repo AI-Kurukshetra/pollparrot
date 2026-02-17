@@ -82,7 +82,7 @@ export function SurveyCard({ survey, onUpdate, hasRecentResponse = false, additi
       <Card
         hoverable
         padding="none"
-        className="group relative overflow-hidden transition-all duration-200"
+        className="group relative overflow-hidden rounded-xl border border-gray-200 shadow-sm hover:shadow-md hover:border-gray-300 transition-all duration-200"
       >
         <Link href={`/dashboard/surveys/${survey.id}/edit`} className="block p-5">
           {/* Header */}

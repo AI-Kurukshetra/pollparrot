@@ -10,7 +10,7 @@ import {
 
 export default function HomePage() {
   return (
-    <div className="min-h-screen w-full bg-white">
+    <div className="min-h-screen w-full bg-white overflow-x-hidden">
       <Navbar />
       <main className="w-full">
         <Hero />

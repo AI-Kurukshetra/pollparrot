@@ -8,7 +8,7 @@
  * and a signOut function.
  */
 
-import { useCallback, useEffect, useState, useMemo } from "react";
+import { useCallback, useEffect, useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import type { User, Session } from "@supabase/supabase-js";
 import { createClient } from "@/lib/supabase/client";
@@ -25,6 +25,9 @@ interface UseUserReturn {
   refreshUser: () => Promise<void>;
 }
 
+// Create client outside component to ensure single instance
+const supabase = createClient();
+
 export function useUser(): UseUserReturn {
   const [user, setUser] = useState<User | null>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
@@ -32,25 +35,27 @@ export function useUser(): UseUserReturn {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
   const router = useRouter();
-
-  // Get the singleton client - memoize to ensure stable reference
-  const supabase = useMemo(() => createClient(), []);
+  const initRef = useRef(false);
 
   // Fetch user profile from database
-  const fetchProfile = useCallback(async (userId: string) => {
-    const { data, error: profileError } = await supabase
-      .from("profiles")
-      .select("*")
-      .eq("id", userId)
-      .single();
+  const fetchProfile = async (userId: string) => {
+    try {
+      const { data, error: profileError } = await supabase
+        .from("profiles")
+        .select("*")
+        .eq("id", userId)
+        .single();
 
-    if (profileError) {
-      console.error("Error fetching profile:", profileError);
+      if (profileError) {
+        console.error("Error fetching profile:", profileError);
+        return null;
+      }
+
+      return data as Profile;
+    } catch {
       return null;
     }
-
-    return data as Profile;
-  }, [supabase]);
+  };
 
   // Refresh user data
   const refreshUser = useCallback(async () => {
@@ -85,7 +90,7 @@ export function useUser(): UseUserReturn {
     } finally {
       setIsLoading(false);
     }
-  }, [supabase, fetchProfile]);
+  }, []);
 
   // Sign out
   const signOut = useCallback(async () => {
@@ -102,21 +107,16 @@ export function useUser(): UseUserReturn {
     } finally {
       setIsLoading(false);
     }
-  }, [supabase, router]);
+  }, [router]);
 
-  // Initial load and auth state subscription
+  // Initial load and auth state subscription - runs once
   useEffect(() => {
+    // Prevent double initialization in strict mode
+    if (initRef.current) return;
+    initRef.current = true;
+
     let isMounted = true;
     let hasResolved = false;
-
-    // Safety timeout - ensure loading state resolves even if auth hangs
-    const timeoutId = setTimeout(() => {
-      if (isMounted && !hasResolved) {
-        console.warn("Auth initialization timed out, defaulting to logged out state");
-        setIsLoading(false);
-        hasResolved = true;
-      }
-    }, 5000);
 
     // Get initial session
     const initializeAuth = async () => {
@@ -129,7 +129,10 @@ export function useUser(): UseUserReturn {
         if (!isMounted || hasResolved) return;
 
         if (sessionError) {
-          throw sessionError;
+          console.error("Auth session error:", sessionError);
+          hasResolved = true;
+          setIsLoading(false);
+          return;
         }
 
         setSession(currentSession);
@@ -142,16 +145,26 @@ export function useUser(): UseUserReturn {
           }
         }
       } catch (err) {
+        console.error("Auth initialization error:", err);
         if (isMounted && !hasResolved) {
           setError(err instanceof Error ? err : new Error("Failed to fetch user"));
         }
       } finally {
         if (isMounted && !hasResolved) {
-          setIsLoading(false);
           hasResolved = true;
+          setIsLoading(false);
         }
       }
     };
+
+    // Set a safety timeout - ensures buttons show even if auth hangs
+    const timeoutId = setTimeout(() => {
+      if (isMounted && !hasResolved) {
+        console.warn("Auth initialization timed out");
+        hasResolved = true;
+        setIsLoading(false);
+      }
+    }, 3000);
 
     initializeAuth();
 
@@ -182,13 +195,14 @@ export function useUser(): UseUserReturn {
       }
     });
 
-    // Cleanup subscription and timeout
+    // Cleanup
     return () => {
       isMounted = false;
       clearTimeout(timeoutId);
       subscription.unsubscribe();
     };
-  }, [supabase, router, fetchProfile]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // Empty deps - only run once
 
   return {
     user,

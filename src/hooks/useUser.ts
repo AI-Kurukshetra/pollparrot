@@ -8,7 +8,7 @@
  * and a signOut function.
  */
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import type { User, Session } from "@supabase/supabase-js";
 import { createClient } from "@/lib/supabase/client";
@@ -32,26 +32,26 @@ export function useUser(): UseUserReturn {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
   const router = useRouter();
+  const initializedRef = useRef(false);
+
+  // Get the singleton client
   const supabase = createClient();
 
   // Fetch user profile from database
-  const fetchProfile = useCallback(
-    async (userId: string) => {
-      const { data, error: profileError } = await supabase
-        .from("profiles")
-        .select("*")
-        .eq("id", userId)
-        .single();
+  const fetchProfile = useCallback(async (userId: string) => {
+    const { data, error: profileError } = await supabase
+      .from("profiles")
+      .select("*")
+      .eq("id", userId)
+      .single();
 
-      if (profileError) {
-        console.error("Error fetching profile:", profileError);
-        return null;
-      }
+    if (profileError) {
+      console.error("Error fetching profile:", profileError);
+      return null;
+    }
 
-      return data as Profile;
-    },
-    [supabase]
-  );
+    return data as Profile;
+  }, [supabase]);
 
   // Refresh user data
   const refreshUser = useCallback(async () => {
@@ -105,10 +105,39 @@ export function useUser(): UseUserReturn {
     }
   }, [supabase, router]);
 
-  // Initial load and auth state subscription
+  // Initial load and auth state subscription - runs once
   useEffect(() => {
+    // Prevent double initialization in React strict mode
+    if (initializedRef.current) return;
+    initializedRef.current = true;
+
     // Get initial session
-    refreshUser();
+    const initializeAuth = async () => {
+      try {
+        const {
+          data: { session: currentSession },
+          error: sessionError,
+        } = await supabase.auth.getSession();
+
+        if (sessionError) {
+          throw sessionError;
+        }
+
+        setSession(currentSession);
+
+        if (currentSession?.user) {
+          setUser(currentSession.user);
+          const userProfile = await fetchProfile(currentSession.user.id);
+          setProfile(userProfile);
+        }
+      } catch (err) {
+        setError(err instanceof Error ? err : new Error("Failed to fetch user"));
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    initializeAuth();
 
     // Subscribe to auth state changes
     const {
@@ -125,6 +154,8 @@ export function useUser(): UseUserReturn {
         setProfile(null);
       }
 
+      setIsLoading(false);
+
       // Refresh router on auth state change
       if (event === "SIGNED_IN" || event === "SIGNED_OUT" || event === "TOKEN_REFRESHED") {
         router.refresh();
@@ -135,7 +166,7 @@ export function useUser(): UseUserReturn {
     return () => {
       subscription.unsubscribe();
     };
-  }, [supabase, router, fetchProfile, refreshUser]);
+  }, [supabase, router, fetchProfile]);
 
   return {
     user,

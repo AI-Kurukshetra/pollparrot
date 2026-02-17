@@ -69,8 +69,9 @@ export function RankingEditor({ question, onSettingsChange }: QuestionEditorProp
 
 // Renderer component for public survey
 export function RankingRenderer({ question, value, onChange, error, disabled }: QuestionRendererProps) {
-  const settings = (question.settings as ChoiceSettings) || { options: [] };
-  const options = settings.options || [];
+  const settings = (question.settings as ChoiceSettings) || {};
+  // Options are stored in question.options column, fallback to settings for backwards compatibility
+  const options = (question.options as Array<{ id: string; label: string }>) || settings.options || [];
 
   // Initialize ranking with default order if not set
   const ranking = (value as string[]) || options.map((o) => o.id);

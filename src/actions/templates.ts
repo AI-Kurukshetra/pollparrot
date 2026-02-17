@@ -2,11 +2,13 @@
 
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import type { Survey, SurveyStatus, FormState, Json } from "@/types";
 
-// Get all templates
+// Get all templates (uses admin client to bypass RLS - templates are public)
 export async function getTemplates(): Promise<Survey[]> {
-  const supabase = await createClient();
+  // Use admin client so all authenticated users can see templates
+  const supabase = createAdminClient();
 
   const { data, error } = await supabase
     .from("surveys")

@@ -1,6 +1,7 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Mail, Lock } from "lucide-react";
 import { signIn } from "@/actions/auth";
@@ -9,10 +10,19 @@ import { APP_ROUTES } from "@/lib/constants";
 import type { FormState } from "@/types";
 
 export function LoginForm() {
+  const router = useRouter();
   const [state, formAction, isPending] = useActionState<FormState | null, FormData>(
     signIn,
     null
   );
+
+  // Handle successful login - redirect to dashboard
+  useEffect(() => {
+    if (state?.success) {
+      router.push(APP_ROUTES.dashboard);
+      router.refresh();
+    }
+  }, [state?.success, router]);
 
   return (
     <form action={formAction} className="space-y-4">

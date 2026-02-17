@@ -109,7 +109,11 @@ export async function signIn(
   }
 
   revalidatePath("/", "layout");
-  redirect(APP_ROUTES.dashboard);
+
+  return {
+    success: true,
+    message: "Login successful",
+  };
 }
 
 /**
@@ -256,7 +260,11 @@ export async function resetPassword(
   }
 
   revalidatePath("/", "layout");
-  redirect(APP_ROUTES.login);
+
+  return {
+    success: true,
+    message: "Password updated successfully",
+  };
 }
 
 /**

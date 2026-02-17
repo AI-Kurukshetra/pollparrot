@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none">
+  <!-- Parrot body -->
+  <path d="M24 4C16 4 10 12 10 20C10 28 14 36 24 42C34 36 38 28 38 20C38 12 32 4 24 4Z" fill="#FF9472"/>
+  <!-- Parrot wing -->
+  <path d="M18 18C18 18 14 24 16 30C18 36 24 38 24 38C24 38 20 32 20 26C20 20 22 16 22 16L18 18Z" fill="#FFB396"/>
+  <!-- Parrot eye area -->
+  <circle cx="28" cy="14" r="6" fill="#FFF0E0"/>
+  <!-- Parrot eye -->
+  <circle cx="29" cy="14" r="2.5" fill="#1A1210"/>
+  <!-- Eye highlight -->
+  <circle cx="30" cy="13" r="1" fill="#FFF0E0"/>
+  <!-- Parrot beak -->
+  <path d="M34 14C34 14 40 12 42 14C44 16 42 20 38 20C34 20 32 18 32 16C32 14 34 14 34 14Z" fill="#FFD700"/>
+  <!-- Beak detail -->
+  <path d="M36 16C38 16 40 15 40 16C40 17 38 18 36 18" stroke="#1A1210" stroke-width="0.5"/>
+  <!-- Tail feathers -->
+  <path d="M14 34L8 42M18 36L14 44M22 38L20 46" stroke="#FF9472" stroke-width="3" stroke-linecap="round"/>
+  <!-- Tail feather tips -->
+  <path d="M14 34L8 42M18 36L14 44M22 38L20 46" stroke="#FFB396" stroke-width="2" stroke-linecap="round" stroke-dasharray="0 8 4"/>
+</svg>

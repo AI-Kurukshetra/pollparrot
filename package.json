@@ -7,8 +7,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "seed": "npx tsx scripts/seed.ts",
-    "types": "npx supabase gen types typescript --project-id $SUPABASE_PROJECT_ID > src/types/database.ts"
+    "db:migrate": "npx tsx scripts/run-migrations.ts",
+    "db:types": "npx supabase gen types typescript --project-id $SUPABASE_PROJECT_ID > src/types/database.ts",
+    "seed": "npx tsx scripts/seed.ts"
   },
   "dependencies": {
     "@supabase/ssr": "^0.8.0",
@@ -23,10 +24,14 @@
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
+    "@types/pg": "^8.16.0",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "dotenv": "^17.3.1",
     "eslint": "^9",
     "eslint-config-next": "16.1.6",
+    "pg": "^8.18.0",
+    "supabase": "^2.76.9",
     "tailwindcss": "^4",
     "typescript": "^5"
   }
